@@ -153,7 +153,7 @@ Designed and implemented UI/UX solutions for ICwares Systems & Softwares, succes
       school: "Gulf Model School Dubai",
       href: "",
       degree: "Pre-University, Pre-University Studies",
-      logoUrl: "/GMS.jpg",
+      logoUrl: "/gms.jpg",
       start: "Jan 2011",
       end: "Dec 2013",
     },
