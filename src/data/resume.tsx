@@ -377,7 +377,7 @@ Designed and implemented UI/UX solutions for ICwares Systems & Softwares, succes
       location: "",
       description:
         "Recognized twice at Pixis for outstanding contributions to product design, design systems, and cross-functional collaboration.",
-      image: "/awards.jpg",
+      image: "/Awards.jpg",
       links: [
         {
           title: "View Awards",
