@@ -33,7 +33,7 @@ export const DATA = {
   ],
   navbar: [
     { href: "/", icon: HomeIcon, label: "Home" },
-    { href: "/resume", icon: FileTextIcon, label: "Resume" },
+    { href: "https://drive.google.com/file/d/1obocJinSdjuKiKrIfEKezt3i5yGmSLVb/view?usp=sharing", icon: FileTextIcon, label: "Resume" },
   ],
   contact: {
     email: "hello@example.com",
