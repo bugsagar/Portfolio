@@ -331,7 +331,7 @@ Designed and implemented UI/UX solutions for ICwares Systems & Softwares, succes
       dates: "",
       location: "",
       description:
-        "Designed a plugin that helps designers generate prompts and identify UI components from images.",
+        "Designed and Developed a plugin that helps designers generate prompts and identify UI components from images.",
       image: "/Brand.jpg",
       links: [
         {
