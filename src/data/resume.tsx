@@ -21,7 +21,7 @@ export const DATA = {
   description:
     "Software Engineer turned Product Designer",
   summary:
-    "Over the past 5+ years, I've designed AI apps, dashboards, mobile, and web experiences by blending engineering expertise with user-centered design.<br/>At Pixis, I built the entire design system and variable architecture and AI-powered workflows to keep design consistency high as the team scaled.",
+    "Over the past 5+ years, I've designed AI apps, dashboards, mobile, and web experiences by blending engineering expertise with user-centered design.<br/><strong style=\"color:white;font-weight:700;\">At Pixis, I built the entire design system and variable architecture and<br/>AI-powered workflows</strong> to keep design consistency high as the team scaled.",
   avatarUrl: "/me.png",
   skills: [
     { name: "AI Platform" },
