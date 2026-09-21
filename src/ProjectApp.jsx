@@ -10,7 +10,7 @@ function ProjectApp() {
 
   useEffect(() => { document.title = `${project.title} — Sagar Manohar`; }, [project.title]);
 
-  const thumbnail = (slug === 'pen-writer' || slug === 'side-projects') ? 'Foodo.jpg' : (slug === 'brand-refresh' ? 'Brand.jpg' : (slug === 'employer-award' ? 'Awards.jpg' : (slug === 'sidegigs' ? 'sidegigs.png' : `${slug}.jpg`)));
+  const thumbnail = (slug === 'pen-writer' || slug === 'side-projects') ? 'pen.jpg' : (slug === 'brand-refresh' ? 'Brand.jpg' : (slug === 'employer-award' ? 'Awards.jpg' : (slug === 'sidegigs' ? 'sidegigs.png' : `${slug}.jpg`)));
 
   return (
     <main className={`page-shell project-page${light ? ' light' : ''}`}>

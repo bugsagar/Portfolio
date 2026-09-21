@@ -49,7 +49,7 @@ const projects = [
 
 const labItems = [
   ['swaram', ['OPEN SOURCE', 'AI'], 'Swaram AI', true],
-  ['pen-writer', ['WEB', 'PRODUCT'], 'Pen Writer'],
+  ['pen-writer', ['WEB', 'PRODUCT'], 'Pen Writer', false, 'https://penwriter.vercel.app/'],
   ['brand-refresh', ['BRAND', 'TOOL'], 'Brand Refresh Plugin', false, 'https://chromewebstore.google.com/detail/brandrefresh/hbdbcbikeiedniojdaneabiopcgnncmc?utm_source=item-share-cb'],
   ['employer-award', ['AWARD'], '2X Employer Awards', false, 'https://drive.google.com/drive/u/1/folders/11QZslnvjtRnChLxH_BYg994xraGNvv0O?usp=sharing'],
 ];
@@ -60,8 +60,8 @@ const thumbnailBySlug = {
   'sidegigs': 'sidegigs.png',
   'brand-refresh': 'Brand.jpg',
   'employer-award': 'Awards.jpg',
-  'pen-writer': 'Foodo.jpg',
-  'side-projects': 'Foodo.jpg',
+  'pen-writer': 'pen.jpg',
+  'side-projects': 'pen.jpg',
 };
 
 const lockedCaseStudies = new Set(['prism', 'adroom', 'pixis', 'visibility']);
@@ -117,14 +117,19 @@ function ProjectModal({ project, onClose }) {
       <div className="modal-backdrop" data-close onClick={onClose} />
       <section className="preview-card" role="dialog" aria-modal="true" aria-labelledby="preview-title">
         <button className="modal-close" type="button" aria-label="Close preview" onClick={onClose}>×</button>
-        <div className={`preview-art preview-art-${project.slug}`}>
+        <a
+          className={`preview-art preview-art-${project.slug}`}
+          href={destination}
+          {...(destination.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}
+          style={{ display: 'block', textDecoration: 'none' }}
+        >
           <img
             className={`preview-image preview-image-${project.slug}`}
             src={`/assets/${thumbnail}`}
             alt={`${project.title} preview`}
           />
-        </div>
-        <div className="preview-footer"><div><h2 id="preview-title">{project.title}</h2><p>2026</p></div><div className="preview-actions">{showViewProject && <a className="view-project-button" href={destination}>View Project <span>↗</span></a>}{showCaseStudy && (caseStudyLocked ? <a className="case-study-button is-locked" href={`mailto:design.sagarmanohar@gmail.com?subject=${emailSubject}`}><i className="fa-solid fa-lock" aria-label="Locked" /> Case Study</a> : caseStudyUrl ? <a className="case-study-button" href={caseStudyUrl}>Case Study <span>↗</span></a> : <button className="case-study-button is-disabled" type="button" disabled>Case Study</button>)}</div></div>
+        </a>
+        <div className="preview-footer"><div><h2 id="preview-title">{project.title}</h2><p>2026</p></div><div className="preview-actions">{showViewProject && <a className="view-project-button" href={destination} {...(destination.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}>View Project <span>↗</span></a>}{showCaseStudy && (caseStudyLocked ? <a className="case-study-button is-locked" href={`mailto:design.sagarmanohar@gmail.com?subject=${emailSubject}`}><i className="fa-solid fa-lock" aria-label="Locked" /> Case Study</a> : caseStudyUrl ? <a className="case-study-button" href={caseStudyUrl} target="_blank" rel="noreferrer">Case Study <span>↗</span></a> : <button className="case-study-button is-disabled" type="button" disabled>Case Study</button>)}</div></div>
       </section>
     </div>
   );
