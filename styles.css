@@ -187,25 +187,64 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
   .project-controls .nav-link { height:35px !important; min-height:35px !important; }
   .project-controls .gallery-toggle { height:44px !important; }
 }
+/* Project Index and LAB listing - spacing like web version & font increased by 30% */
+.index-section .project,
+.lab-section .project {
+  min-height: 56px;
+  padding: 4px 0;
+  gap: 10px;
+}
+.index-section .project-name,
+.lab-section .project-name {
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -2.5px;
+}
+.index-section .tags b,
+.lab-section .tags b {
+  font-size: 16px;
+  padding: 6px 11px;
+}
+
 @media (max-width:700px) {
+  .index-section .project-list,
+  .lab-section .project-list {
+    border-left: 4px solid #4b4b4b !important;
+    padding-left: 14px !important;
+  }
   .index-section .project,
   .lab-section .project {
-    padding:24px 0;
-    background:rgba(0,0,0,0);
-    font-weight:400;
-    font-size:16px;
-    line-height:1.2;
-    letter-spacing:0;
-    color:#fff;
+    display: flex !important;
+    align-items: center !important;
+    min-height: 42px !important;
+    padding: 5px 0 !important;
+    gap: 8px !important;
+    background: transparent !important;
   }
   .index-section .project-name,
-  .lab-section .project-name,
+  .lab-section .project-name {
+    font-size: 31px !important;
+    line-height: 1.1 !important;
+    letter-spacing: -1.2px !important;
+    color: var(--text) !important;
+  }
+  .index-section .tags,
+  .lab-section .tags {
+    display: flex !important;
+    gap: 4px !important;
+    flex: none !important;
+  }
+  .index-section .tags b,
+  .lab-section .tags b {
+    font-size: 12px !important;
+    padding: 4px 7px !important;
+    line-height: 1.2 !important;
+  }
   .lab-section > p {
-    font-weight:400;
-    font-size:16px;
-    line-height:1.2;
-    letter-spacing:0;
-    color:#fff;
-    background:rgba(0,0,0,0);
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+    color: #888 !important;
+    margin-bottom: 16px !important;
+    background: transparent !important;
   }
 }
