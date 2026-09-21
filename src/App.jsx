@@ -115,9 +115,9 @@ function ProjectModal({ project, onClose }) {
       <div className="modal-backdrop" data-close onClick={onClose} />
       <section className="preview-card" role="dialog" aria-modal="true" aria-labelledby="preview-title">
         <button className="modal-close" type="button" aria-label="Close preview" onClick={onClose}>×</button>
-        <div className="preview-art">
+        <div className={`preview-art preview-art-${project.slug}`}>
           <img
-            className="preview-image"
+            className={`preview-image preview-image-${project.slug}`}
             src={`/assets/${thumbnail}`}
             alt={`${project.title} preview`}
           />

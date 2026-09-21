@@ -187,18 +187,35 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
   .project-controls .nav-link { height:35px !important; min-height:35px !important; }
   .project-controls .gallery-toggle { height:44px !important; }
 }
-/* Project Index and LAB listing - spacing like web version & font increased by 30% */
+/* Project Index, LAB, and Education listing - spacing like web version & font increased by 30% */
 .index-section .project,
-.lab-section .project {
+.lab-section .project,
+.education-section .education-item {
   min-height: 56px;
   padding: 4px 0;
   gap: 10px;
 }
 .index-section .project-name,
-.lab-section .project-name {
+.lab-section .project-name,
+.education-section .project-name {
   font-size: 56px;
   line-height: 1.05;
   letter-spacing: -2.5px;
+}
+.education-section .project-name small {
+  font-size: 20px;
+  line-height: 1.3;
+  color: #999;
+  letter-spacing: -0.4px;
+  margin-top: 6px;
+  display: block;
+}
+.education-section time {
+  font-size: 16px;
+  color: #999;
+  font-family: 'DM Mono', monospace;
+  padding-top: 8px;
+  white-space: nowrap;
 }
 .index-section .tags b,
 .lab-section .tags b {
@@ -208,7 +225,8 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
 
 @media (max-width:700px) {
   .index-section .project-list,
-  .lab-section .project-list {
+  .lab-section .project-list,
+  .education-section .education-list {
     border-left: 4px solid #4b4b4b !important;
     padding-left: 14px !important;
   }
@@ -221,12 +239,35 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
     gap: 8px !important;
     background: transparent !important;
   }
+  .education-section .education-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: 6px 0 !important;
+    min-height: 42px !important;
+    background: transparent !important;
+  }
   .index-section .project-name,
-  .lab-section .project-name {
+  .lab-section .project-name,
+  .education-section .project-name {
     font-size: 31px !important;
     line-height: 1.1 !important;
     letter-spacing: -1.2px !important;
     color: var(--text) !important;
+  }
+  .education-section .project-name small {
+    font-size: 16px !important;
+    line-height: 1.3 !important;
+    color: #999 !important;
+    margin-top: 4px !important;
+    display: block !important;
+  }
+  .education-section time {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    color: #999 !important;
+    font-family: 'DM Mono', monospace !important;
+    padding-top: 0 !important;
   }
   .index-section .tags,
   .lab-section .tags {
@@ -246,5 +287,12 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
     color: #888 !important;
     margin-bottom: 16px !important;
     background: transparent !important;
+  }
+
+  /* MyStop thumbnail image fit left-aligned on mobile */
+  .preview-image-mystop,
+  .preview-image[src*="mystop"] {
+    object-fit: contain !important;
+    object-position: left center !important;
   }
 }
