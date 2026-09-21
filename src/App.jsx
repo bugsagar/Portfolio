@@ -49,7 +49,7 @@ const projects = [
 
 const labItems = [
   ['swaram', ['OPEN SOURCE', 'AI'], 'Swaram AI', true],
-  ['side-projects', ['WEB', 'PRODUCT'], 'Side Projects'],
+  ['pen-writer', ['WEB', 'PRODUCT'], 'Pen Writer'],
   ['brand-refresh', ['BRAND', 'TOOL'], 'Brand Refresh Plugin', false, 'https://chromewebstore.google.com/detail/brandrefresh/hbdbcbikeiedniojdaneabiopcgnncmc?utm_source=item-share-cb'],
   ['employer-award', ['AWARD'], '2X Employer Awards', false, 'https://drive.google.com/drive/u/1/folders/11QZslnvjtRnChLxH_BYg994xraGNvv0O?usp=sharing'],
 ];
@@ -60,6 +60,7 @@ const thumbnailBySlug = {
   'sidegigs': 'sidegigs.png',
   'brand-refresh': 'Brand.jpg',
   'employer-award': 'Awards.jpg',
+  'pen-writer': 'Foodo.jpg',
   'side-projects': 'Foodo.jpg',
 };
 
@@ -68,7 +69,7 @@ const caseStudyUrls = {
   sidegigs: 'https://www.figma.com/proto/iexIWEufQppG8Hc0iDYcJ2/Sidegigs-case-study?node-id=1-2&viewport=350%2C182%2C0.1&t=rErWKMtzlo4uSdOV-8&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&hide-ui=1',
 };
 const caseStudyOnly = new Set(['mystop', 'care-io']);
-const viewProjectOnly = new Set(['swaram']);
+const viewProjectOnly = new Set(['swaram', 'pen-writer', 'side-projects', 'brand-refresh', 'employer-award']);
 
 function Tags({ tags }) {
   return <span className="tags">{tags.map((tag) => <b key={tag}>{tag}</b>)}</span>;
@@ -108,7 +109,8 @@ function ProjectModal({ project, onClose }) {
   const caseStudyLocked = lockedCaseStudies.has(project.slug);
   const caseStudyUrl = caseStudyUrls[project.slug] || (caseStudyOnly.has(project.slug) ? project.externalUrl : undefined);
   const showViewProject = !caseStudyOnly.has(project.slug);
-  const showCaseStudy = !viewProjectOnly.has(project.slug);
+  const hasCaseStudy = caseStudyLocked || Boolean(caseStudyUrl);
+  const showCaseStudy = !viewProjectOnly.has(project.slug) && hasCaseStudy;
   const emailSubject = encodeURIComponent(`${project.title} case study access`);
   return (
     <div className="project-modal is-open">

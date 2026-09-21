@@ -122,9 +122,9 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
 
 /* Keep project previews docked to the bottom of the viewport */
 .project-modal { place-items:end center; }
-.preview-card { margin-top:0; border-radius:22px 22px 0 0; transform:translateY(16px) scale(.985); }
+.preview-card { margin-top:0; border-radius:22px; transform:translateY(16px) scale(.985); }
 .project-modal.is-open .preview-card { transform:translateY(0) scale(1); }
-@media (max-width:700px) { .preview-card { border-radius:17px 17px 0 0; } }
+@media (max-width:700px) { .preview-card { border-radius:20px !important; } }
 .preview-art { background:#d7d7d7; }
 .preview-image { display:block; width:100%; height:100%; object-fit:cover; object-position:center; }
 .about-highlight { display:inline-block; color:var(--text); transition:opacity .35s ease, transform .35s cubic-bezier(.22,1,.36,1), color .35s ease; }
@@ -294,5 +294,27 @@ footer { padding-top:97px; position:relative; }.footer-bottom { display:grid; gr
   .preview-image[src*="mystop"] {
     object-fit: contain !important;
     object-position: left center !important;
+  }
+
+  /* All cards round corners in mobile view */
+  .project-modal {
+    padding: 8px 8px max(14px, env(safe-area-inset-bottom, 14px)) !important;
+  }
+  .preview-card {
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+  .preview-art {
+    border-radius: 16px !important;
+  }
+  .originkit-footer {
+    border-radius: 20px !important;
+  }
+  .tetris-section {
+    border-radius: 20px !important;
+  }
+  .case-visual,
+  .visual-card {
+    border-radius: 18px !important;
   }
 }
