@@ -120,11 +120,6 @@ function ProjectModal({ project, onClose }) {
             className="preview-image"
             src={`/assets/${thumbnail}`}
             alt={`${project.title} preview`}
-            onError={(event) => {
-              if (event.currentTarget.dataset.fallback) return;
-              event.currentTarget.dataset.fallback = 'true';
-              event.currentTarget.src = `/public/assets/${thumbnail}`;
-            }}
           />
         </div>
         <div className="preview-footer"><div><h2 id="preview-title">{project.title}</h2><p>2026</p></div><div className="preview-actions">{showViewProject && <a className="view-project-button" href={destination}>View Project <span>↗</span></a>}{showCaseStudy && (caseStudyLocked ? <a className="case-study-button is-locked" href={`mailto:design.sagarmanohar@gmail.com?subject=${emailSubject}`}><i className="fa-solid fa-lock" aria-label="Locked" /> Case Study</a> : caseStudyUrl ? <a className="case-study-button" href={caseStudyUrl}>Case Study <span>↗</span></a> : <button className="case-study-button is-disabled" type="button" disabled>Case Study</button>)}</div></div>
