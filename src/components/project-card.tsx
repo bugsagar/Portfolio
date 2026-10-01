@@ -164,25 +164,23 @@ export function ProjectCard({
             <Markdown>{description}</Markdown>
           </div>
 
-          <button
-            onClick={(e) => {
-              if (!href && !isProtected) {
-                e.preventDefault();
-                return;
-              }
-              isProtected ? setShowModal(true) : window.open(href, "_blank");
-            }}
-            className={cn(
-              "mt-2 flex items-center justify-center gap-1.5 w-full rounded-lg py-2 text-xs font-medium transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none",
-              !href && !isProtected && "cursor-not-allowed opacity-70 hover:shadow-none hover:-translate-y-0"
-            )}
-            style={{ border: "1px solid #D0D0D0", background: "white", color: "#222" }}
-            disabled={!href && !isProtected}
-          >
-            {isProtected && <Lock className="h-3 w-3 text-gray-400" />}
-            {(!href && !isProtected) ? "Coming soon" : "View Case Study"}
-            {(href || isProtected) ? <ArrowUpRight className="h-3.5 w-3.5" /> : null}
-          </button>
+          {(href || isProtected) && (
+            <button
+              onClick={(e) => {
+                if (!href && !isProtected) {
+                  e.preventDefault();
+                  return;
+                }
+                isProtected ? setShowModal(true) : window.open(href, "_blank");
+              }}
+              className="mt-2 flex items-center justify-center gap-1.5 w-full rounded-lg py-2 text-xs font-medium transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+              style={{ border: "1px solid #D0D0D0", background: "white", color: "#222" }}
+            >
+              {isProtected && <Lock className="h-3 w-3 text-gray-400" />}
+              View Case Study
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       </div>
     </>
