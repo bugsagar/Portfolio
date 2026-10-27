@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { caseStudies } from './caseStudies.js';
 import {
-  Contact, Nav, SectionLabel, caseStudyUrl, external, pad, playClickTone, playHoverTone,
+  Contact, Nav, SectionLabel, caseStudyUrl, external, lockedCaseStudies, pad, playClickTone, playHoverTone,
   projectDestination, projects, thumbImage, windowTag, workPageUrl,
 } from './site.jsx';
 
@@ -198,7 +198,7 @@ function Learnings({ study }) {
 }
 
 function MoreWork({ slug }) {
-  const others = projects.filter(([s]) => s !== slug && caseStudies[s]);
+  const others = projects.filter(([s]) => s !== slug && caseStudies[s] && !lockedCaseStudies.has(s));
   return (
     <section className="cs-more section">
       <div className="cs-more-head">
@@ -224,7 +224,8 @@ function MoreWork({ slug }) {
 
 function CaseStudyPage({ slug }) {
   const project = projects.find(([s]) => s === slug);
-  const study = caseStudies[slug];
+  // a locked study has no public page: opening its URL falls back to /work
+  const study = lockedCaseStudies.has(slug) ? undefined : caseStudies[slug];
   const active = useActiveSection();
 
   useEffect(() => {

@@ -77,6 +77,9 @@ const thumbnailBySlug = {
 
 // Case studies hosted on this site at /work/<slug>; see src/caseStudies.js.
 export const caseStudyPages = new Set(['prism', 'adroom', 'pixis', 'visibility']);
+// Locked case studies ask for access by email instead of opening their page.
+// Remove a slug here to publish its /work/<slug> page again.
+export const lockedCaseStudies = new Set(['prism', 'adroom', 'pixis', 'visibility']);
 const caseStudyUrls = {
   sidegigs: 'https://www.figma.com/proto/iexIWEufQppG8Hc0iDYcJ2/Sidegigs-case-study?node-id=1-2&viewport=350%2C182%2C0.1&t=rErWKMtzlo4uSdOV-8&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&hide-ui=1',
 };
@@ -112,10 +115,17 @@ export const pad = (n) => String(n).padStart(2, '0');
 export const caseStudyUrl = (slug) => `${workPageUrl}/${slug}`;
 export const projectDestination = (slug, url) => url || `/project.html?project=${encodeURIComponent(slug)}`;
 
-export function caseStudyFor(slug, url) {
+export function caseStudyFor(slug, url, title = slug) {
+  if (lockedCaseStudies.has(slug)) {
+    return { locked: true, url: `mailto:${email}?subject=${encodeURIComponent(`${title} case study access`)}` };
+  }
   if (caseStudyPages.has(slug)) return { url: caseStudyUrl(slug) };
   const caseUrl = caseStudyUrls[slug] || (caseStudyOnly.has(slug) ? url : undefined);
   return caseUrl ? { url: caseUrl, only: caseStudyOnly.has(slug) } : null;
+}
+
+export function LockIcon() {
+  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-label="Locked"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>;
 }
 
 export function Handles() {
@@ -190,13 +200,13 @@ export function SectionLabel({ index, children }) {
   return <p className="section-label mono"><span>[{pad(index)}]</span> {children}</p>;
 }
 
-export function ProjectActions({ slug, url }) {
-  const caseStudy = caseStudyFor(slug, url);
+export function ProjectActions({ slug, url, title }) {
+  const caseStudy = caseStudyFor(slug, url, title);
   const destination = projectDestination(slug, url);
   return (
     <div className="work-actions">
       {!caseStudy?.only && <a className="button-dark" href={destination} {...external(destination)} onPointerEnter={playHoverTone}>View Project <span>↗</span></a>}
-      {caseStudy && <a className={caseStudy.only ? 'button-dark' : 'button-light'} href={caseStudy.url} {...external(caseStudy.url)} onPointerEnter={playHoverTone}>Case Study <span>↗</span></a>}
+      {caseStudy && <a className={caseStudy.only ? 'button-dark' : 'button-light'} href={caseStudy.url} {...external(caseStudy.url)} onPointerEnter={playHoverTone}>{caseStudy.locked ? <><LockIcon /> Case Study</> : <>Case Study <span>↗</span></>}</a>}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import {
-  Contact, windowTag, Education, Handles, Marquee, Nav, caseStudyFor, external, pad,
+  Contact, windowTag, Education, Handles, LockIcon, Marquee, Nav, caseStudyFor, external, pad,
   playClickTone, playHoverTone, projectDetails, projectDestination, projects, thumbImage, useElementSize,
 } from './site.jsx';
 
@@ -33,7 +33,7 @@ function WorkHero() {
 function CaseFile({ index, slug, tags, title, url }) {
   const detail = projectDetails[slug];
   const destination = projectDestination(slug, url);
-  const caseStudy = caseStudyFor(slug, url);
+  const caseStudy = caseStudyFor(slug, url, title);
   const imageClickable = slug !== 'pixis';
   const Window = imageClickable ? 'a' : 'div';
   return (
@@ -60,7 +60,7 @@ function CaseFile({ index, slug, tags, title, url }) {
       </div>
       <div className="case-file-buttons">
         <a className="button-dark" href={destination} {...external(destination)} onPointerEnter={playHoverTone}>View Project <span>↗</span></a>
-        {caseStudy && <a className="button-light" href={caseStudy.url} {...external(caseStudy.url)} onPointerEnter={playHoverTone}>Case Study <span>{caseStudy.url.startsWith('http') ? '↗' : '→'}</span></a>}
+        {caseStudy && <a className="button-light" href={caseStudy.url} {...external(caseStudy.url)} onPointerEnter={playHoverTone}>{caseStudy.locked ? <><LockIcon /> Case Study</> : <>Case Study <span>{caseStudy.url.startsWith('http') ? '↗' : '→'}</span></>}</a>}
       </div>
     </article>
   );

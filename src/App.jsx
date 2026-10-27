@@ -205,7 +205,7 @@ function Work() {
                   <h3>{title}</h3>
                   <p className="work-summary">{detail?.summary}</p>
                   <div className="tag-list mono">{tags.map((t) => <span key={t}>{t}</span>)}</div>
-                  <ProjectActions slug={slug} url={url} />
+                  <ProjectActions slug={slug} url={url} title={title} />
                 </div>
                 <figure className="work-visual">
                   <figcaption className="mono"><b>#</b> {title} · {detail?.year || 'Case file'}</figcaption>
