@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
+import TearTicket from './components/TearTicket.jsx';
 
 export { projects as projectDetails } from '../project.js';
 
@@ -231,7 +232,7 @@ function LocalTime() {
     const id = setInterval(() => setTime(format()), 1000);
     return () => clearInterval(id);
   }, []);
-  return <strong className="clock">{time}</strong>;
+  return <strong className="clock foil">{time}</strong>;
 }
 
 export function Contact({ index }) {
@@ -251,20 +252,26 @@ export function Contact({ index }) {
         </div>
       </div>
 
-      <div className="contact-panel">
-        <div>
-          <p className="panel-head"><b>Elsewhere</b><span className="mono">↗</span></p>
-          <a href={linkedinUrl} target="_blank" rel="noreferrer"><span>LinkedIn</span><span className="mono">↗</span></a>
-          <a href={behanceUrl} target="_blank" rel="noreferrer"><span>Behance</span><span className="mono">↗</span></a>
-          <a href={resumeUrl} target="_blank" rel="noreferrer"><span>Resume</span><span className="mono">↗</span></a>
-          <a href={`mailto:${email}`}><span>{email}</span><span className="mono">@</span></a>
-        </div>
-        <div>
-          <p className="panel-head"><b>Local time</b><span className="mono online">● online</span></p>
+      <TearTicket
+        code={`SM-${new Date().getFullYear()}-IST`}
+        watermark="05"
+        micro="SAGAR MANOHAR"
+        main={<>
+          <p className="ticket-kicker mono"><span>ADMIT ONE · ELSEWHERE</span><span>No. 05</span></p>
+          <h3 className="ticket-title foil">Find me online</h3>
+          <div className="ticket-links">
+            <a href={linkedinUrl} target="_blank" rel="noreferrer"><span>LinkedIn</span><span className="mono">↗</span></a>
+            <a href={behanceUrl} target="_blank" rel="noreferrer"><span>Behance</span><span className="mono">↗</span></a>
+            <a href={resumeUrl} target="_blank" rel="noreferrer"><span>Resume</span><span className="mono">↗</span></a>
+            <a href={`mailto:${email}`}><span>{email}</span><span className="mono">@</span></a>
+          </div>
+        </>}
+        stub={<>
+          <p className="ticket-kicker mono"><span>LOCAL TIME</span><span className="online">● online</span></p>
           <LocalTime />
           <p className="muted-small">India (IST).</p>
-        </div>
-      </div>
+        </>}
+      />
 
       <div className="outline-name selection" aria-hidden="true" onPointerEnter={playHoverTone}>Sagar Manohar<Handles /></div>
 
