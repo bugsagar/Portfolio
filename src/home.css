@@ -130,24 +130,28 @@ h1, h2, h3, p, figure, dl, dd { margin: 0; }
 .panel-row b:first-child:not(:has(.swatch)) { font-family: var(--sans); font-weight: 600; }
 .swatch { width: 12px; height: 12px; border-radius: 3px; background: var(--ink); }
 
-.hero-photo { position: absolute; z-index: 2; left: 300px; bottom: 112px; width: 200px; transform: rotate(-2deg); }
+/* The photo and focus cards share one size: --card is the width (unitless, so
+   the wake can derive its scale from it) and --card-h the body height. */
+.hero-cards { display: contents; }
+.hero-photo, .focus-card { --card: 210; --card-h: 300px; width: calc(var(--card) * 1px); }
+.hero-photo { position: absolute; z-index: 2; left: 300px; bottom: 54px; transform: rotate(-2deg); }
 .hero-photo figcaption { margin-bottom: 6px; color: var(--ink-2); font-size: 10px; }
-.hero-photo img { width: 200px; height: 148px; object-fit: cover; object-position: center 22%; border-radius: 4px; box-shadow: var(--shadow); }
+.hero-photo img { width: 100%; height: var(--card-h); object-fit: cover; object-position: center 25%; border-radius: 10px; box-shadow: var(--shadow); }
 .squiggle { position: absolute; right: -54px; bottom: 30px; width: 40px; fill: none; stroke: var(--ink-2); stroke-width: 1.5; stroke-linecap: round; }
 
-.focus-card { position: absolute; z-index: 2; right: 300px; bottom: 54px; width: 210px; }
+.focus-card { position: absolute; z-index: 2; right: 300px; bottom: 54px; }
 .focus-label { margin-bottom: 6px; color: var(--accent); font-size: 10px; }
-.focus-inner { padding: 14px; border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+.focus-inner { display: flex; flex-direction: column; height: var(--card-h); padding: 14px; border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
 .focus-kicker { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 10px; }
 .focus-kicker span { width: 14px; height: 14px; border-radius: 3px; background: var(--ink); }
 .focus-inner h3 { margin-top: 10px; font-size: 22px; font-weight: 600; line-height: 1; letter-spacing: -0.04em; }
 .focus-copy { margin-top: 6px; color: var(--ink-3); font-size: 10px; line-height: 1.35; }
-.focus-bars { display: flex; align-items: flex-end; gap: 4px; height: 26px; margin: 12px 0; }
-.focus-bars i { flex: 1; height: 50%; border-radius: 2px; background: #e4e4ea; }
-.focus-bars i:nth-child(3) { height: 70%; } .focus-bars i:nth-child(5) { height: 85%; } .focus-bars i:nth-child(6) { height: 70%; }
-.focus-bars i:last-child { height: 100%; background: var(--accent); }
-.focus-button { display: block; padding: 8px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 500; text-align: center; }
-.cursor-b { left: -60px; top: -40px; animation: drift 9s ease-in-out infinite reverse; }
+.focus-wake { --wake-scale: calc((var(--card) - 28) / 360); flex: none; width: calc((var(--card) - 28) * 1px); height: calc(240px * var(--wake-scale)); margin: 10px 0 12px; overflow: hidden; border-radius: 6px; background: var(--surface-2); }
+/* AsciiWake draws at a fixed 360×240; it maps the pointer through its own
+   bounding box, so scaling it down with a transform keeps the hand aligned. */
+.focus-wake .asc { transform: scale(var(--wake-scale)); transform-origin: 0 0; }
+.focus-button { display: block; margin-top: auto; padding: 8px; border-radius: 6px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 500; text-align: center; }
+.cursor-b { left: -78px; top: 70px; animation: drift 9s ease-in-out infinite reverse; }
 .cursor-b svg { fill: var(--green); } .cursor-b em { background: var(--green); }
 
 .toolbar { position: absolute; z-index: 2; left: 50%; bottom: 22px; display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); transform: translateX(-50%); font-size: 13px; }
@@ -433,23 +437,36 @@ a.case-window:hover .window-image img { transform: scale(1.03); }
 .cs-more-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .cs-more-link { margin: 10px 8px 0; color: var(--accent); font-size: 14px; font-weight: 500; }
 
+/* ══ ASCII wake ════════════════════════════════════════════ */
+.asc {
+  /* Bencho's --fill-on is the ink drawn on a filled surface; here that is the
+     page ink, set on the component's own root so it doesn't leak out. --ink
+     is already this project's ink token, so it needs no mapping. */
+  --fill-on: var(--ink);
+  position: relative;
+  cursor: crosshair;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;}
+
+.asc-canvas { display: block; color: var(--fill-on, var(--ink)); }
+
 /* ---------- responsive ---------- */
 @media (max-width: 1240px) {
-  .hero-photo { left: 40px; bottom: 380px; }
   .layers-panel { display: none; }
-  .focus-card { right: 32px; bottom: 380px; }
+  /* no room beside the hero copy: the two cards sit in a row under the CTA */
+  .hero-cards { position: relative; z-index: 2; display: flex; justify-content: center; align-items: flex-start; gap: 28px; margin-top: 56px; padding-right: 28px; }
+  .hero-photo, .focus-card { position: static; }
+  .hero { min-height: auto; padding-bottom: 100px; }
+  .cursor-b, .squiggle { display: none; }
   .design-panel { display: none; }
   .lab-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .work-tabs button span { display: none; }
 }
 
-@media (max-width: 1240px) and (min-height: 900px) {
-  .hero-photo, .focus-card { bottom: 110px; }
-}
-
 @media (max-width: 1000px) {
-  .hero-photo, .focus-card, .hero-arrow { display: none; }
-  .hero { min-height: auto; padding-bottom: 120px; }
+  .hero-arrow { display: none; }
 }
 
 @media (max-width: 900px) {
@@ -511,7 +528,11 @@ a.case-window:hover .window-image img { transform: scale(1.03); }
   .cursor-a { top: auto; bottom: -30px; right: 0; }
   .hero-statement { margin-top: 44px; font-size: 21px; }
   .toolbar { display: none; }
-  .hero { padding-bottom: 72px; }
+  .hero { padding-bottom: 56px; }
+  .hero-cards { gap: 12px; margin-top: 44px; padding-right: 22px; }
+  .hero-photo, .focus-card { --card: 160; --card-h: 268px; }
+  .hero-photo { transform: rotate(-1.5deg); }
+  .focus-inner h3 { font-size: 17px; }
   .marquee-head span:last-child { display: none; }
   .chip { font-size: 15px; padding: 9px 13px; }
   .about-columns, .about-meta { grid-template-columns: 1fr; gap: 16px; }
@@ -535,6 +556,10 @@ a.case-window:hover .window-image img { transform: scale(1.03); }
   .cs-outcomes > div + div { border-top: 1px solid var(--line); }
   .cs-role { grid-template-columns: 1fr; gap: 8px; }
   .cs-more-head { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 360px) {
+  .hero-photo, .focus-card { --card: 138; --card-h: 250px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

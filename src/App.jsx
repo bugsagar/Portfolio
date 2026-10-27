@@ -3,6 +3,7 @@ import {
   Contact, windowTag, Education, Handles, Marquee, Nav, ProjectActions, SectionLabel, behanceUrl, external, labItems, pad,
   playClickTone, playHoverTone, projectDetails, projectDestination, projects, responsiveImage, resumeUrl, thumbImage, useElementSize, workPageUrl,
 } from './site.jsx';
+import { AsciiWake } from './components/ASCIIWake';
 
 function Ruler({ axis, length, highlight }) {
   const marks = [];
@@ -67,9 +68,10 @@ function Hero() {
         </ul>
       </aside>
 
+      <div className="hero-cards">
       <figure className="hero-photo" aria-hidden="true">
         <figcaption className="mono">▣ me.webp</figcaption>
-        <img {...responsiveImage('me', '200px')} alt="" />
+        <img {...responsiveImage('me', '210px')} alt="" />
         <svg className="squiggle" viewBox="0 0 40 40"><path d="M10 30 C 0 10, 30 0, 22 20 S 30 38, 38 28" /></svg>
       </figure>
 
@@ -79,10 +81,11 @@ function Hero() {
           <p className="focus-kicker"><span />Focus area</p>
           <h3>AI products at Pixis AI</h3>
           <p className="focus-copy">Across marketing, creative and design systems</p>
-          <div className="focus-bars"><i /><i /><i /><i /><i /><i /><i /></div>
+          <div className="focus-wake"><AsciiWake /></div>
           <a className="focus-button" href="https://pixis.ai/" target="_blank" rel="noreferrer" tabIndex={-1}>See Pixis AI ↗</a>
         </div>
         <span className="cursor cursor-b"><svg viewBox="0 0 16 16"><path d="M1 1l5 14 2-6 6-2z" /></svg><em>Now: Prism AI</em></span>
+      </div>
       </div>
 
       <aside className="panel design-panel" aria-hidden="true">
