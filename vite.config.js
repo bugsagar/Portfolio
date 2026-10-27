@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Serve /work (no trailing slash) from work/index.html, matching the Vercel rewrite.
+// Mirror the Vercel rewrites: /work -> work/index.html, /work/<slug> -> case-study/index.html.
 const workRoute = () => {
   const rewrite = (req, _res, next) => {
     if (/^\/work(\?|$)/.test(req.url)) req.url = req.url.replace('/work', '/work/');
+    else if (/^\/work\/[\w-]+\/?(\?|$)/.test(req.url)) req.url = '/case-study/index.html';
     next();
   };
   return {
@@ -27,6 +28,7 @@ export default defineConfig({
         main: 'index.html',
         project: 'project.html',
         work: 'work/index.html',
+        caseStudy: 'case-study/index.html',
       },
     },
   },

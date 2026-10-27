@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   Contact, windowTag, Education, Handles, Marquee, Nav, ProjectActions, SectionLabel, behanceUrl, external, labItems, pad,
-  playClickTone, playHoverTone, projectDetails, projectDestination, projects, resumeUrl, thumb, useElementSize, workPageUrl,
+  playClickTone, playHoverTone, projectDetails, projectDestination, projects, responsiveImage, resumeUrl, thumbImage, useElementSize, workPageUrl,
 } from './site.jsx';
 
 function Ruler({ axis, length, highlight }) {
@@ -60,7 +60,7 @@ function Hero() {
           <li className="is-selected">⟋ Sagar Manohar</li>
           <li>T Statement</li>
           <li>◇ Button</li>
-          <li>▣ me.png</li>
+          <li>▣ me.webp</li>
           <li>◇ Currently designing</li>
           <li>◌ Comment: Sagar</li>
           <li>◌ Now: Prism AI</li>
@@ -68,8 +68,8 @@ function Hero() {
       </aside>
 
       <figure className="hero-photo" aria-hidden="true">
-        <figcaption className="mono">▣ me.png</figcaption>
-        <img src="/assets/me.png" alt="" />
+        <figcaption className="mono">▣ me.webp</figcaption>
+        <img {...responsiveImage('me', '200px')} alt="" />
         <svg className="squiggle" viewBox="0 0 40 40"><path d="M10 30 C 0 10, 30 0, 22 20 S 30 38, 38 28" /></svg>
       </figure>
 
@@ -113,9 +113,9 @@ function About() {
   return (
     <section className="about section" id="about">
       <figure className="about-photo">
-        <figcaption className="mono"><span><b>▣</b> me.png</span><span>Crop · {photo.w} × {photo.h}</span></figcaption>
+        <figcaption className="mono"><span><b>▣</b> me.webp</span><span>Crop · {photo.w} × {photo.h}</span></figcaption>
         <div className="selection about-frame" ref={photoRef}>
-          <img src="/assets/me.png" alt="Sagar Manohar" />
+          <img {...responsiveImage('me', '(max-width: 900px) 100vw, 40vw')} alt="Sagar Manohar" />
           <Handles />
           <span className="cursor cursor-c" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M1 1l5 14 2-6 6-2z" /></svg><em>Sagar · Pixis AI</em></span>
         </div>
@@ -194,7 +194,7 @@ function Work() {
             const detail = projectDetails[slug];
             const destination = projectDestination(slug, url);
             const imageClickable = slug !== 'pixis';
-            const Img = <img src={thumb(slug)} alt={`${title} preview`} loading="lazy" />;
+            const Img = <img {...thumbImage(slug, '(max-width: 900px) 100vw, 60vw')} alt={`${title} preview`} loading="lazy" />;
             return (
               <article key={slug} className={`work-item${i === active ? ' is-active' : ''}`} aria-hidden={i !== active ? undefined : false}>
                 <div className="work-copy">
@@ -202,7 +202,7 @@ function Work() {
                   <h3>{title}</h3>
                   <p className="work-summary">{detail?.summary}</p>
                   <div className="tag-list mono">{tags.map((t) => <span key={t}>{t}</span>)}</div>
-                  <ProjectActions slug={slug} title={title} url={url} />
+                  <ProjectActions slug={slug} url={url} />
                 </div>
                 <figure className="work-visual">
                   <figcaption className="mono"><b>#</b> {title} · {detail?.year || 'Case file'}</figcaption>
@@ -241,7 +241,7 @@ function Lab() {
           const Card = url ? 'a' : 'div';
           return (
             <Card key={slug} className={`lab-card${url ? '' : ' is-static'}`} {...(url ? { href: url, ...external(url) } : {})} onPointerEnter={playHoverTone}>
-              <div className="lab-image"><img src={thumb(slug)} alt={`${title} preview`} loading="lazy" /></div>
+              <div className="lab-image"><img {...thumbImage(slug, '(max-width: 640px) 100vw, (max-width: 1240px) 50vw, 25vw')} alt={`${title} preview`} loading="lazy" /></div>
               <p className="lab-meta mono"><span>{pad(i + 1)} / {tags.join(' · ')}</span>{url && <em>↗</em>}</p>
               <h3>{title}</h3>
               <p>{detail?.summary}</p>
@@ -265,7 +265,7 @@ function App() {
         <Lab />
         <Education index={4} />
       </main>
-      <Contact page="home" index={5} />
+      <Contact index={5} />
     </div>
   );
 }

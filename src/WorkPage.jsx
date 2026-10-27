@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import {
-  Contact, windowTag, Education, Handles, LockIcon, Marquee, Nav, caseStudyFor, email, external, pad,
-  playClickTone, playHoverTone, projectDetails, projectDestination, projects, thumb, useElementSize,
+  Contact, windowTag, Education, Handles, Marquee, Nav, caseStudyFor, external, pad,
+  playClickTone, playHoverTone, projectDetails, projectDestination, projects, thumbImage, useElementSize,
 } from './site.jsx';
 
 function WorkHero() {
@@ -45,7 +45,7 @@ function CaseFile({ index, slug, tags, title, url }) {
         onPointerEnter={playHoverTone}
       >
         <span className="window-bar"><span className="window-brand"><i />{title}</span><span className="window-tags">{tags.slice(0, 3).map((t) => <em key={t}>{windowTag(t)}</em>)}</span></span>
-        <span className="window-image"><img src={thumb(slug)} alt={`${title} preview`} loading="lazy" /></span>
+        <span className="window-image"><img {...thumbImage(slug, '(max-width: 900px) 100vw, 50vw')} alt={`${title} preview`} loading={index < 2 ? 'eager' : 'lazy'} /></span>
       </Window>
       <div className="case-file-body">
         <div>
@@ -56,12 +56,11 @@ function CaseFile({ index, slug, tags, title, url }) {
           <span>{tags.join(' · ')}</span>
           <span>{detail?.role}</span>
           <span>{detail?.year}</span>
-          <div className="case-file-actions">
-            {caseStudy?.locked && <a href={`mailto:${email}?subject=${encodeURIComponent(`${title} case study access`)}`}><LockIcon /> CASE STUDY</a>}
-            {caseStudy?.url && !caseStudy.only && <a href={caseStudy.url} target="_blank" rel="noreferrer">CASE STUDY ↗</a>}
-            <a className="arrow-button" href={caseStudy?.only ? caseStudy.url : destination} {...external(caseStudy?.only ? caseStudy.url : destination)} aria-label={`Open ${title}`} onPointerEnter={playHoverTone}>→</a>
-          </div>
         </div>
+      </div>
+      <div className="case-file-buttons">
+        <a className="button-dark" href={destination} {...external(destination)} onPointerEnter={playHoverTone}>View Project <span>↗</span></a>
+        {caseStudy && <a className="button-light" href={caseStudy.url} {...external(caseStudy.url)} onPointerEnter={playHoverTone}>Case Study <span>{caseStudy.url.startsWith('http') ? '↗' : '→'}</span></a>}
       </div>
     </article>
   );
@@ -79,7 +78,7 @@ function WorkPage() {
         <Marquee />
         <Education index={2} />
       </main>
-      <Contact page="work" index={3} />
+      <Contact index={3} />
     </div>
   );
 }

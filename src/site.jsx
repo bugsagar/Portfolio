@@ -66,16 +66,16 @@ const education = [
   ['Srinivas Institute of Technology', 'B.E. Computer Engineering', 'Jan 2013 - Dec 2017'],
 ];
 
+// Images are WebP: <name>.webp (max 1920w) plus <name>-960.webp for smaller slots.
 const thumbnailBySlug = {
-  swaram: 'swaram.jpg',
-  'care-io': 'care.jpg',
-  sidegigs: 'sidegigs.png',
-  'brand-refresh': 'Brand.jpg',
-  'employer-award': 'Awards.jpg',
-  'pen-writer': 'pen.jpg',
+  'care-io': 'care',
+  'brand-refresh': 'Brand',
+  'employer-award': 'Awards',
+  'pen-writer': 'pen',
 };
 
-const lockedCaseStudies = new Set(['prism', 'adroom', 'pixis', 'visibility']);
+// Case studies hosted on this site at /work/<slug>; see src/caseStudies.js.
+export const caseStudyPages = new Set(['prism', 'adroom', 'pixis', 'visibility']);
 const caseStudyUrls = {
   sidegigs: 'https://www.figma.com/proto/iexIWEufQppG8Hc0iDYcJ2/Sidegigs-case-study?node-id=1-2&viewport=350%2C182%2C0.1&t=rErWKMtzlo4uSdOV-8&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&hide-ui=1',
 };
@@ -95,20 +95,26 @@ function navHref(id, page) {
   return id === 'home' ? '/' : `/#${id}`;
 }
 
-export const thumb = (slug) => `/assets/${thumbnailBySlug[slug] || `${slug}.jpg`}`;
+const imageName = (slug) => thumbnailBySlug[slug] || slug;
+export const thumb = (slug) => `/assets/${imageName(slug)}.webp`;
+// Spread onto <img>: lets the browser pick the 960w file for cards and phones.
+export const responsiveImage = (name, sizes) => ({
+  src: `/assets/${name}.webp`,
+  srcSet: `/assets/${name}-960.webp 960w, /assets/${name}.webp 1920w`,
+  sizes,
+  decoding: 'async',
+});
+export const thumbImage = (slug, sizes) => responsiveImage(imageName(slug), sizes);
 export const external = (url) => (url?.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {});
 export const windowTag = (tag) => (tag.length <= 2 ? tag : tag.toLowerCase());
 export const pad = (n) => String(n).padStart(2, '0');
+export const caseStudyUrl = (slug) => `${workPageUrl}/${slug}`;
 export const projectDestination = (slug, url) => url || `/project.html?project=${encodeURIComponent(slug)}`;
 
 export function caseStudyFor(slug, url) {
-  if (lockedCaseStudies.has(slug)) return { locked: true };
+  if (caseStudyPages.has(slug)) return { url: caseStudyUrl(slug) };
   const caseUrl = caseStudyUrls[slug] || (caseStudyOnly.has(slug) ? url : undefined);
   return caseUrl ? { url: caseUrl, only: caseStudyOnly.has(slug) } : null;
-}
-
-export function LockIcon() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>;
 }
 
 export function Handles() {
@@ -183,14 +189,13 @@ export function SectionLabel({ index, children }) {
   return <p className="section-label mono"><span>[{pad(index)}]</span> {children}</p>;
 }
 
-export function ProjectActions({ slug, title, url }) {
+export function ProjectActions({ slug, url }) {
   const caseStudy = caseStudyFor(slug, url);
   const destination = projectDestination(slug, url);
   return (
     <div className="work-actions">
       {!caseStudy?.only && <a className="button-dark" href={destination} {...external(destination)} onPointerEnter={playHoverTone}>View Project <span>↗</span></a>}
-      {caseStudy?.locked && <a className="button-light" href={`mailto:${email}?subject=${encodeURIComponent(`${title} case study access`)}`} onPointerEnter={playHoverTone}><LockIcon /> Case Study</a>}
-      {caseStudy?.url && <a className={caseStudy.only ? 'button-dark' : 'button-light'} href={caseStudy.url} target="_blank" rel="noreferrer" onPointerEnter={playHoverTone}>Case Study <span>↗</span></a>}
+      {caseStudy && <a className={caseStudy.only ? 'button-dark' : 'button-light'} href={caseStudy.url} {...external(caseStudy.url)} onPointerEnter={playHoverTone}>Case Study <span>↗</span></a>}
     </div>
   );
 }
@@ -229,7 +234,7 @@ function LocalTime() {
   return <strong className="clock">{time}</strong>;
 }
 
-export function Contact({ page, index }) {
+export function Contact({ index }) {
   return (
     <footer className="contact section" id="contact">
       <div className="contact-head">
@@ -248,10 +253,6 @@ export function Contact({ page, index }) {
 
       <div className="contact-panel">
         <div>
-          <p className="panel-head"><b>Pages</b><span className="mono">{navItems.length}</span></p>
-          {navItems.map(([label, id], i) => <a key={id} href={navHref(id, page)}><span>{label}</span><span className="mono">{pad(i + 1)}</span></a>)}
-        </div>
-        <div>
           <p className="panel-head"><b>Elsewhere</b><span className="mono">↗</span></p>
           <a href={linkedinUrl} target="_blank" rel="noreferrer"><span>LinkedIn</span><span className="mono">↗</span></a>
           <a href={behanceUrl} target="_blank" rel="noreferrer"><span>Behance</span><span className="mono">↗</span></a>
@@ -265,7 +266,7 @@ export function Contact({ page, index }) {
         </div>
       </div>
 
-      <div className="outline-name selection" aria-hidden="true">Sagar Manohar<Handles /></div>
+      <div className="outline-name selection" aria-hidden="true" onPointerEnter={playHoverTone}>Sagar Manohar<Handles /></div>
 
       <div className="footer-bar mono">
         <span>© {new Date().getFullYear()} SAGAR MANOHAR.</span>

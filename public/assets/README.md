@@ -1,16 +1,17 @@
 # Local assets
 
-Replace these files with your own images. The site uses them when present and falls back to generated artwork when a file is missing.
+Images are served as WebP. Each image has two files:
+
+- `<name>.webp` — full size, at most 1920px wide
+- `<name>-960.webp` — 960px wide, picked by the browser for cards and phones
+
+`src/site.jsx` (`thumb`, `thumbImage`, `responsiveImage`) builds the paths, so a new image only needs both files with the same base name.
 
 ## Profile
 
-- `me.png` — profile image
-- `bg.jpeg` — profile cover/banner image
+- `me.webp` / `me-960.webp` — profile image
+- `bg.jpeg` — cover image used by the old project page styles (`styles.css`)
 
 ## Projects
 
-Use these filenames for project images:
-
-`prism.jpg`, `adroom.jpg`, `sidegigs.jpg`, `pixis.jpg`, `creative.jpg`, `dashboards.jpg`, `components.jpg`, `swaram.jpg`, `coding.jpg`, `side-projects.jpg`, `terminal.jpg`
-
-PNG/WebP files also work if you update the extension in `script.js` and `project.js`.
+Project images are named after the project slug in `src/site.jsx`, for example `prism.webp`, `adroom.webp`, `sidegigs.webp`, `pixis.webp`, `mystop.webp`, `visibility.webp`, `care.webp`, `swaram.webp`, `pen.webp`, `Brand.webp`, `Awards.webp`.
