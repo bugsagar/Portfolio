@@ -54,6 +54,7 @@ function Hero() {
         </div>
       </div>
 
+      <div className="hero-cards">
       <aside className="panel layers-panel" aria-hidden="true">
         <div className="panel-tabs"><b>Layers</b><span>Assets</span><em>Home</em></div>
         <ul>
@@ -68,7 +69,6 @@ function Hero() {
         </ul>
       </aside>
 
-      <div className="hero-cards">
       <figure className="hero-photo" aria-hidden="true">
         <figcaption className="mono">▣ me.webp</figcaption>
         <img {...responsiveImage('me', '210px')} alt="" />
