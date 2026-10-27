@@ -1,120 +1,8 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { projects as projectDetails } from '../project.js';
-
-const resumeUrl = 'https://drive.google.com/file/d/1obocJinSdjuKiKrIfEKezt3i5yGmSLVb/view?usp=sharing';
-const email = 'design.sagarmanohar@gmail.com';
-const linkedinUrl = 'https://www.linkedin.com/in/sagar-manohar/';
-const behanceUrl = 'https://www.behance.net/sagarmanohar';
-let hoverAudioContext;
-
-function playHoverTone() {
-  try {
-    hoverAudioContext ||= new AudioContext();
-    const oscillator = hoverAudioContext.createOscillator();
-    const gain = hoverAudioContext.createGain();
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(520, hoverAudioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(680, hoverAudioContext.currentTime + 0.045);
-    gain.gain.setValueAtTime(0.0001, hoverAudioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.018, hoverAudioContext.currentTime + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, hoverAudioContext.currentTime + 0.065);
-    oscillator.connect(gain).connect(hoverAudioContext.destination);
-    oscillator.start();
-    oscillator.stop(hoverAudioContext.currentTime + 0.07);
-  } catch {}
-}
-
-function playClickTone() {
-  try {
-    hoverAudioContext ||= new AudioContext();
-    const oscillator = hoverAudioContext.createOscillator();
-    const gain = hoverAudioContext.createGain();
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(260, hoverAudioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(180, hoverAudioContext.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.0001, hoverAudioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.025, hoverAudioContext.currentTime + 0.006);
-    gain.gain.exponentialRampToValueAtTime(0.0001, hoverAudioContext.currentTime + 0.09);
-    oscillator.connect(gain).connect(hoverAudioContext.destination);
-    oscillator.start();
-    oscillator.stop(hoverAudioContext.currentTime + 0.1);
-  } catch {}
-}
-
-// [slug, tags, title, externalUrl]
-const projects = [
-  ['prism', ['AI', 'PRODUCT', 'DESIGN SYSTEM'], 'Prism AI', 'https://pixis.ai/products/prism/'],
-  ['adroom', ['AI', 'PRODUCT', 'MOBILE'], 'Adroom', 'https://pixis.ai/products/creative-ai/'],
-  ['sidegigs', ['PRODUCT', 'MOBILE'], 'Sidegigs', 'https://sidegigs.app/'],
-  ['pixis', ['DESIGN SYSTEM', 'AI'], 'Pixis Design System'],
-  ['mystop', ['UX', 'CASE STUDY'], 'MyStop', 'https://www.behance.net/gallery/217621443/MYSTOP-where-is-my-bus-app'],
-  ['visibility', ['MARKETING', 'AI'], 'Visibility', 'https://pixis.ai/products/pixis-visibility/'],
-  ['care-io', ['UX', 'CASE STUDY'], 'Care.io', 'https://www.behance.net/gallery/160066733/CAREIO-UX-UI'],
-];
-
-const labItems = [
-  ['swaram', ['OPEN SOURCE', 'AI'], 'Swaram AI'],
-  ['pen-writer', ['WEB', 'PRODUCT'], 'Pen Writer', 'https://penwriter.vercel.app/'],
-  ['brand-refresh', ['BRAND', 'TOOL'], 'Brand Refresh Plugin', 'https://chromewebstore.google.com/detail/brandrefresh/hbdbcbikeiedniojdaneabiopcgnncmc?utm_source=item-share-cb'],
-  ['employer-award', ['AWARD'], '2X Employer Awards', 'https://drive.google.com/drive/u/1/folders/11QZslnvjtRnChLxH_BYg994xraGNvv0O?usp=sharing'],
-];
-
-const education = [
-  ['Bridge UX Design Studios', 'Advanced UX/UI Training for Web & Mobile', 'Mar 2019 - Mar 2019'],
-  ['Toonz Academy', 'Diploma, Visual Effects and Animation', 'Jan 2018 - Dec 2018'],
-  ['Srinivas Institute of Technology', 'B.E. Computer Engineering', 'Jan 2013 - Dec 2017'],
-];
-
-const thumbnailBySlug = {
-  swaram: 'swaram.jpg',
-  'care-io': 'care.jpg',
-  sidegigs: 'sidegigs.png',
-  'brand-refresh': 'Brand.jpg',
-  'employer-award': 'Awards.jpg',
-  'pen-writer': 'pen.jpg',
-};
-
-const lockedCaseStudies = new Set(['prism', 'adroom', 'pixis', 'visibility']);
-const caseStudyUrls = {
-  sidegigs: 'https://www.figma.com/proto/iexIWEufQppG8Hc0iDYcJ2/Sidegigs-case-study?node-id=1-2&viewport=350%2C182%2C0.1&t=rErWKMtzlo4uSdOV-8&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&hide-ui=1',
-};
-const caseStudyOnly = new Set(['mystop', 'care-io']);
-
-const spaces = ['AI Products', 'Design Systems', 'Marketing Tech', 'Mobile Apps', 'Open Source', 'Digital Health', 'Mobility', 'Creative Tools'];
-const skills = ['Product Design', 'UX Design', 'AI Prototyping', 'Design Systems', 'Interaction Design', 'Front-end Engineering', 'Visual Effects', 'Animation', 'Brand Design', 'Mobile UX'];
-const navLinks = [['Home', '#home'], ['About', '#about'], ['Work', '#work'], ['Lab', '#lab'], ['Contact', '#contact']];
-
-const thumb = (slug) => `/assets/${thumbnailBySlug[slug] || `${slug}.jpg`}`;
-const external = (url) => (url?.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {});
-const pad = (n) => String(n).padStart(2, '0');
-
-function LockIcon() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>;
-}
-
-function Handles() {
-  return <>{['tl', 'tm', 'tr', 'ml', 'mr', 'bl', 'bm', 'br'].map((p) => <i key={p} className={`handle h-${p}`} />)}</>;
-}
-
-function useElementSize(ref) {
-  const [size, setSize] = useState({ w: 0, h: 0, x: 0, y: 0 });
-  useLayoutEffect(() => {
-    if (!ref.current) return undefined;
-    const update = () => {
-      const el = ref.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const frame = el.closest('section')?.getBoundingClientRect() || rect;
-      setSize({ w: Math.round(el.offsetWidth), h: Math.round(el.offsetHeight), x: Math.round(rect.left - frame.left), y: Math.round(rect.top - frame.top) });
-    };
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(ref.current);
-    window.addEventListener('resize', update);
-    return () => { observer.disconnect(); window.removeEventListener('resize', update); };
-  }, [ref]);
-  return size;
-}
+import { useEffect, useRef, useState } from 'react';
+import {
+  Contact, windowTag, Education, Handles, Marquee, Nav, ProjectActions, SectionLabel, behanceUrl, external, labItems, pad,
+  playClickTone, playHoverTone, projectDetails, projectDestination, projects, resumeUrl, thumb, useElementSize, workPageUrl,
+} from './site.jsx';
 
 function Ruler({ axis, length, highlight }) {
   const marks = [];
@@ -125,38 +13,6 @@ function Ruler({ axis, length, highlight }) {
       {highlight.size > 0 && <span className="ruler-highlight" style={style} />}
       {marks.map((m) => <span key={m} className="ruler-mark" style={axis === 'x' ? { left: m } : { top: m }}>{m}</span>)}
     </div>
-  );
-}
-
-function Nav() {
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState('#home');
-  useEffect(() => {
-    const onScroll = () => {
-      let current = '#home';
-      let best = -Infinity;
-      navLinks.forEach(([, href]) => {
-        const top = document.querySelector(href)?.getBoundingClientRect().top;
-        if (top !== undefined && top < window.innerHeight * 0.4 && top > best) { best = top; current = href; }
-      });
-      setActive(current);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return (
-    <header className={`site-nav${open ? ' is-open' : ''}`}>
-      <a className="brand" href="#home" onClick={() => setOpen(false)}>
-        <span className="brand-mark" aria-hidden="true"><i /><i /></span>
-        <strong>Sagar Manohar</strong><span className="brand-sub">/ Portfolio</span>
-      </a>
-      <nav className="nav-pill" aria-label="Primary">
-        {navLinks.map(([label, href]) => <a key={href} href={href} className={active === href ? 'is-active' : ''} onClick={() => setOpen(false)}>{label}</a>)}
-      </nav>
-      <a className="connect-button" href={`mailto:${email}`}>Let's Connect ↗</a>
-      <button className="menu-button" type="button" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}><i /><i /></button>
-    </header>
   );
 }
 
@@ -192,7 +48,7 @@ function Hero() {
           An AI Product &amp; UX Designer, blending 5+ years of design experience with engineering and hands-on prototyping.
         </p>
         <div className="hero-cta">
-          <a className="button-dark" href="#work" onPointerEnter={playHoverTone}>See selected work <span>↘</span></a>
+          <a className="button-dark" href="#selected-work" onPointerEnter={playHoverTone}>See selected work <span>↘</span></a>
           <svg className="hero-arrow" viewBox="0 0 80 40" aria-hidden="true"><path d="M78 30 C 60 0, 25 0, 6 22" /><path d="M6 22 l 3 -9 M6 22 l 9 -2" /></svg>
         </div>
       </div>
@@ -251,21 +107,6 @@ function Hero() {
   );
 }
 
-function Marquee() {
-  const row = (items, icon) => [...items, ...items, ...items].map((item, i) => <span className="chip" key={`${item}-${i}`}><i>{icon}</i>{item}</span>);
-  return (
-    <section className="marquee" aria-label="Spaces and skills">
-      <div className="marquee-head mono"><span>◇ PROBLEMS &amp; SPACES I DESIGN FOR</span><span>{spaces.length} SPACES · {skills.length} SKILLS</span></div>
-      <div className="marquee-track"><div className="marquee-row">{row(spaces, '◈')}</div></div>
-      <div className="marquee-track"><div className="marquee-row reverse muted">{row(skills, 'T')}</div></div>
-    </section>
-  );
-}
-
-function SectionLabel({ index, children }) {
-  return <p className="section-label mono"><span>[{pad(index)}]</span> {children}</p>;
-}
-
 function About() {
   const photoRef = useRef(null);
   const photo = useElementSize(photoRef);
@@ -302,19 +143,6 @@ function About() {
   );
 }
 
-function ProjectActions({ slug, title, url }) {
-  const caseStudyLocked = lockedCaseStudies.has(slug);
-  const caseStudyUrl = caseStudyUrls[slug] || (caseStudyOnly.has(slug) ? url : undefined);
-  const destination = url || `/project.html?project=${encodeURIComponent(slug)}`;
-  return (
-    <div className="work-actions">
-      {!caseStudyOnly.has(slug) && <a className="button-dark" href={destination} {...external(destination)} onPointerEnter={playHoverTone}>View Project <span>↗</span></a>}
-      {caseStudyLocked && <a className="button-light" href={`mailto:${email}?subject=${encodeURIComponent(`${title} case study access`)}`} onPointerEnter={playHoverTone}><LockIcon /> Case Study</a>}
-      {!caseStudyLocked && caseStudyUrl && <a className={caseStudyOnly.has(slug) ? 'button-dark' : 'button-light'} href={caseStudyUrl} target="_blank" rel="noreferrer" onPointerEnter={playHoverTone}>Case Study <span>↗</span></a>}
-    </div>
-  );
-}
-
 function Work() {
   const sectionRef = useRef(null);
   const [active, setActive] = useState(0);
@@ -341,7 +169,7 @@ function Work() {
   };
 
   return (
-    <section className="work" id="work" ref={sectionRef} style={{ '--count': projects.length }}>
+    <section className="work" id="selected-work" ref={sectionRef} style={{ '--count': projects.length }}>
       <div className="work-sticky">
         <div className="work-top">
           <SectionLabel index={2}>SELECTED WORK</SectionLabel>
@@ -356,12 +184,15 @@ function Work() {
         </div>
         <div className="work-intro">
           <h2>Designing where people meet AI.</h2>
-          <p>From AI workspaces and creative tools to design systems and mobile products, these are projects where design, engineering and prototyping meet.</p>
+          <div>
+            <p>From AI workspaces and creative tools to design systems and mobile products, these are projects where design, engineering and prototyping meet.</p>
+            <a className="text-link work-all" href={workPageUrl}>View all work <span>↗</span></a>
+          </div>
         </div>
         <div className="work-stage">
           {projects.map(([slug, tags, title, url], i) => {
             const detail = projectDetails[slug];
-            const destination = url || `/project.html?project=${encodeURIComponent(slug)}`;
+            const destination = projectDestination(slug, url);
             const imageClickable = slug !== 'pixis';
             const Img = <img src={thumb(slug)} alt={`${title} preview`} loading="lazy" />;
             return (
@@ -376,7 +207,7 @@ function Work() {
                 <figure className="work-visual">
                   <figcaption className="mono"><b>#</b> {title} · {detail?.year || 'Case file'}</figcaption>
                   <div className="work-window">
-                    <div className="window-bar"><span className="window-brand"><i />{title}</span><span className="window-tags">{tags.slice(0, 3).map((t) => <em key={t}>{t.toLowerCase()}</em>)}</span></div>
+                    <div className="window-bar"><span className="window-brand"><i />{title}</span><span className="window-tags">{tags.slice(0, 3).map((t) => <em key={t}>{windowTag(t)}</em>)}</span></div>
                     {imageClickable
                       ? <a className="window-image" href={destination} {...external(destination)} tabIndex={-1}>{Img}</a>
                       : <div className="window-image">{Img}</div>}
@@ -422,101 +253,19 @@ function Lab() {
   );
 }
 
-function Education() {
-  const [active, setActive] = useState(0);
-  return (
-    <section className="education section" id="education">
-      <SectionLabel index={4}>EDUCATION</SectionLabel>
-      <h2 className="display">Trained across design, motion and code.</h2>
-      <p className="lede">The path that shaped how I work today.</p>
-      <div className="auto-layout mono"><span className="is-on">Auto layout</span><span>Horizontal</span><span>Gap 24</span><span>Padding 24</span><em>Item {active + 1} / {education.length}</em></div>
-      <div className="edu-row">
-        {education.map(([school, course, time], i) => (
-          <article key={school} className={`edu-card${i === active ? ' is-active' : ''}`} onPointerEnter={() => setActive(i)} onFocus={() => setActive(i)} tabIndex={0}>
-            <p className="edu-top mono"><span>{pad(i + 1)}</span><span>{time}</span></p>
-            <div>
-              <h3>{school}</h3>
-              <p>{course}</p>
-            </div>
-            {i < education.length - 1 && <span className="gap-tag mono" aria-hidden="true">24</span>}
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function LocalTime() {
-  const format = () => new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour12: false });
-  const [time, setTime] = useState(format);
-  useEffect(() => {
-    const id = setInterval(() => setTime(format()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  return <strong className="clock">{time}</strong>;
-}
-
-function Contact() {
-  const outlineRef = useRef(null);
-  return (
-    <footer className="contact section" id="contact">
-      <div className="contact-head">
-        <div>
-          <SectionLabel index={5}>SAY HELLO</SectionLabel>
-          <h2 className="contact-title">Made it this far? <span className="selection">Say hello<Handles /><span className="size-tag mono">Text · 104</span></span>.</h2>
-        </div>
-        <div className="contact-aside">
-          <p>Whether it's a design opportunity, an AI product idea, or just comparing notes, I'd love to connect.</p>
-          <div className="contact-buttons">
-            <a className="button-accent" href={`mailto:${email}`}>Email Me <span>↗</span></a>
-            <a className="button-light" href={linkedinUrl} target="_blank" rel="noreferrer">Find Me on LinkedIn <span>↗</span></a>
-          </div>
-        </div>
-      </div>
-
-      <div className="contact-panel">
-        <div>
-          <p className="panel-head"><b>Pages</b><span className="mono">{navLinks.length}</span></p>
-          {navLinks.map(([label, href], i) => <a key={href} href={href}><span>{label}</span><span className="mono">{pad(i + 1)}</span></a>)}
-        </div>
-        <div>
-          <p className="panel-head"><b>Elsewhere</b><span className="mono">↗</span></p>
-          <a href={linkedinUrl} target="_blank" rel="noreferrer"><span>LinkedIn</span><span className="mono">↗</span></a>
-          <a href={behanceUrl} target="_blank" rel="noreferrer"><span>Behance</span><span className="mono">↗</span></a>
-          <a href={resumeUrl} target="_blank" rel="noreferrer"><span>Resume</span><span className="mono">↗</span></a>
-          <a href={`mailto:${email}`}><span>{email}</span><span className="mono">@</span></a>
-        </div>
-        <div>
-          <p className="panel-head"><b>Local time</b><span className="mono online">● online</span></p>
-          <LocalTime />
-          <p className="muted-small">India (IST).</p>
-        </div>
-      </div>
-
-      <div className="outline-name selection" ref={outlineRef} aria-hidden="true">Sagar Manohar<Handles /></div>
-
-      <div className="footer-bar mono">
-        <span>© {new Date().getFullYear()} SAGAR MANOHAR.</span>
-        <span>AI PRODUCT &amp; UX DESIGNER</span>
-        <a href="#home">BACK TO TOP ↑</a>
-      </div>
-    </footer>
-  );
-}
-
 function App() {
   return (
-    <div className="site" onClickCapture={playClickTone}>
-      <Nav />
+    <div className="site" id="top" onClickCapture={playClickTone}>
+      <Nav page="home" />
       <main>
         <Hero />
         <Marquee />
         <About />
         <Work />
         <Lab />
-        <Education />
+        <Education index={4} />
       </main>
-      <Contact />
+      <Contact page="home" index={5} />
     </div>
   );
 }
