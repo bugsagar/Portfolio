@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { caseStudies } from './caseStudies.js';
+import { PrismContent, PrismHero, prismSections } from './PrismCaseStudy.jsx';
+import { AdroomContent, AdroomHero, adroomSections } from './AdroomCaseStudy.jsx';
+import { VisibilityContent, VisibilityHero, visibilitySections } from './VisibilityCaseStudy.jsx';
 import {
-  Contact, Nav, SectionLabel, caseStudyUrl, external, lockedCaseStudies, pad, playClickTone, playHoverTone,
+  Contact, Nav, SectionLabel, caseStudyUrl, email, external, lockedCaseStudies, pad, playClickTone, playHoverTone,
   projectDestination, projects, thumbImage, windowTag, workPageUrl,
 } from './site.jsx';
 
@@ -23,7 +26,14 @@ function Accent({ parts }) {
   return <>{parts[0]}<span className="accent">{parts[1]}</span></>;
 }
 
-function useActiveSection() {
+// Case studies with their own hand-built page, keyed by slug.
+const customStudies = {
+  prism: { sections: prismSections, Hero: PrismHero, Content: PrismContent },
+  adroom: { sections: adroomSections, Hero: AdroomHero, Content: AdroomContent },
+  visibility: { sections: visibilitySections, Hero: VisibilityHero, Content: VisibilityContent },
+};
+
+function useActiveSection(sections) {
   const [active, setActive] = useState(sections[0][0]);
   useEffect(() => {
     const onScroll = () => {
@@ -37,7 +47,7 @@ function useActiveSection() {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [sections]);
   return active;
 }
 
@@ -198,7 +208,24 @@ function Learnings({ study }) {
 }
 
 function MoreWork({ slug }) {
-  const others = projects.filter(([s]) => s !== slug && caseStudies[s] && !lockedCaseStudies.has(s));
+  const others = projects.filter(([s]) => s !== slug && (caseStudies[s] || customStudies[s]) && !lockedCaseStudies.has(s));
+  if (!others.length) {
+    return (
+      <section className="cs-more section">
+        <div className="cs-more-head">
+          <div>
+            <SectionLabel index={11}>KEEP READING</SectionLabel>
+            <h2 className="display">More work, on request.</h2>
+            <p className="cs-more-note">The other case studies are shared on request.</p>
+          </div>
+          <div className="cs-more-actions">
+            <a className="button-dark" href={`mailto:${email}?subject=${encodeURIComponent('Case study access')}`} onPointerEnter={playHoverTone}>Request access <span>↗</span></a>
+            <a className="button-light" href={workPageUrl} onPointerEnter={playHoverTone}>All work <span>→</span></a>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="cs-more section">
       <div className="cs-more-head">
@@ -225,43 +252,49 @@ function MoreWork({ slug }) {
 function CaseStudyPage({ slug }) {
   const project = projects.find(([s]) => s === slug);
   // a locked study has no public page: opening its URL falls back to /work
+  const custom = lockedCaseStudies.has(slug) ? undefined : customStudies[slug];
   const study = lockedCaseStudies.has(slug) ? undefined : caseStudies[slug];
-  const active = useActiveSection();
+  const tocSections = custom ? custom.sections : sections;
+  const active = useActiveSection(tocSections);
 
   useEffect(() => {
-    if (project && study) document.title = `${project[2]} case study · Sagar Manohar`;
+    if (project && (custom || study)) document.title = `${project[2]} case study · Sagar Manohar`;
     else window.location.replace(workPageUrl);
-  }, [project, study]);
+  }, [project, custom, study]);
 
-  if (!project || !study) return null;
+  if (!project || !(custom || study)) return null;
   const title = project[2];
 
   return (
     <div className="site" id="top" onClickCapture={playClickTone}>
       <Nav page="work" />
       <main>
-        <CaseHero project={project} study={study} />
+        {custom ? <custom.Hero project={project} /> : <CaseHero project={project} study={study} />}
         <div className="cs-layout">
           <nav className="cs-toc" aria-label="In this project">
             <p className="mono">IN THIS PROJECT</p>
             <ol>
-              {sections.map(([id, label], i) => (
+              {tocSections.map(([id, label], i) => (
                 <li key={id}><a href={`#${id}`} className={active === id ? 'is-active' : ''}><span className="mono">{pad(i + 1)}</span>{label}</a></li>
               ))}
             </ol>
           </nav>
           <div className="cs-content">
-            <Overview study={study} />
-            <Problem study={study} />
-            <Approach study={study} />
-            <Decisions study={study} slug={slug} title={title} />
-            <Outcomes study={study} />
-            <Learnings study={study} />
+            {custom ? <custom.Content /> : (
+              <>
+                <Overview study={study} />
+                <Problem study={study} />
+                <Approach study={study} />
+                <Decisions study={study} slug={slug} title={title} />
+                <Outcomes study={study} />
+                <Learnings study={study} />
+              </>
+            )}
           </div>
         </div>
         <MoreWork slug={slug} />
       </main>
-      <Contact index={8} />
+      <Contact index={custom ? 12 : 8} />
     </div>
   );
 }

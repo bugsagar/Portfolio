@@ -79,7 +79,7 @@ const thumbnailBySlug = {
 export const caseStudyPages = new Set(['prism', 'adroom', 'pixis', 'visibility']);
 // Locked case studies ask for access by email instead of opening their page.
 // Remove a slug here to publish its /work/<slug> page again.
-export const lockedCaseStudies = new Set(['prism', 'adroom', 'pixis', 'visibility']);
+export const lockedCaseStudies = new Set(['pixis']);
 const caseStudyUrls = {
   sidegigs: 'https://www.figma.com/proto/iexIWEufQppG8Hc0iDYcJ2/Sidegigs-case-study?node-id=1-2&viewport=350%2C182%2C0.1&t=rErWKMtzlo4uSdOV-8&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&hide-ui=1',
 };
