@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { caseStudies } from './caseStudies.js';
-import { PrismContent, PrismHero, prismSections } from './PrismCaseStudy.jsx';
-import { AdroomContent, AdroomHero, adroomSections } from './AdroomCaseStudy.jsx';
-import { VisibilityContent, VisibilityHero, visibilitySections } from './VisibilityCaseStudy.jsx';
+import CleanCaseStudy from './CleanCaseStudy.jsx';
+import prism from './studies/prism.js';
+import adroom from './studies/adroom.js';
+import visibility from './studies/visibility.js';
 import {
   Contact, Nav, SectionLabel, caseStudyUrl, email, external, lockedCaseStudies, pad, playClickTone, playHoverTone,
-  projectDestination, projects, thumbImage, windowTag, workPageUrl,
+  projectDestination, projectDetails, projects, thumbImage, windowTag, workPageUrl,
 } from './site.jsx';
 
 const sections = [
@@ -26,12 +27,8 @@ function Accent({ parts }) {
   return <>{parts[0]}<span className="accent">{parts[1]}</span></>;
 }
 
-// Case studies with their own hand-built page, keyed by slug.
-const customStudies = {
-  prism: { sections: prismSections, Hero: PrismHero, Content: PrismContent },
-  adroom: { sections: adroomSections, Hero: AdroomHero, Content: AdroomContent },
-  visibility: { sections: visibilitySections, Hero: VisibilityHero, Content: VisibilityContent },
-};
+// Case studies written as data and rendered by CleanCaseStudy, keyed by slug.
+const customStudies = { prism, adroom, visibility };
 
 function useActiveSection(sections) {
   const [active, setActive] = useState(sections[0][0]);
@@ -208,7 +205,7 @@ function Learnings({ study }) {
 }
 
 function MoreWork({ slug }) {
-  const others = projects.filter(([s]) => s !== slug && (caseStudies[s] || customStudies[s]) && !lockedCaseStudies.has(s));
+  const others = projects.filter(([s]) => s !== slug && caseStudies[s] && !lockedCaseStudies.has(s));
   if (!others.length) {
     return (
       <section className="cs-more section">
@@ -254,8 +251,7 @@ function CaseStudyPage({ slug }) {
   // a locked study has no public page: opening its URL falls back to /work
   const custom = lockedCaseStudies.has(slug) ? undefined : customStudies[slug];
   const study = lockedCaseStudies.has(slug) ? undefined : caseStudies[slug];
-  const tocSections = custom ? custom.sections : sections;
-  const active = useActiveSection(tocSections);
+  const active = useActiveSection(sections);
 
   useEffect(() => {
     if (project && (custom || study)) document.title = `${project[2]} case study · Sagar Manohar`;
@@ -265,36 +261,47 @@ function CaseStudyPage({ slug }) {
   if (!project || !(custom || study)) return null;
   const title = project[2];
 
+  if (custom) {
+    const more = projects
+      .filter(([s]) => s !== slug && customStudies[s] && !lockedCaseStudies.has(s))
+      .map(([s, , t]) => [s, t, projectDetails[s]?.summary]);
+    return (
+      <div className="site is-clean" id="top" onClickCapture={playClickTone}>
+        <Nav page="work" />
+        <main>
+          <CleanCaseStudy study={custom} project={project} more={more} />
+        </main>
+        <Contact index={2} />
+      </div>
+    );
+  }
+
   return (
     <div className="site" id="top" onClickCapture={playClickTone}>
       <Nav page="work" />
       <main>
-        {custom ? <custom.Hero project={project} /> : <CaseHero project={project} study={study} />}
+        <CaseHero project={project} study={study} />
         <div className="cs-layout">
           <nav className="cs-toc" aria-label="In this project">
             <p className="mono">IN THIS PROJECT</p>
             <ol>
-              {tocSections.map(([id, label], i) => (
+              {sections.map(([id, label], i) => (
                 <li key={id}><a href={`#${id}`} className={active === id ? 'is-active' : ''}><span className="mono">{pad(i + 1)}</span>{label}</a></li>
               ))}
             </ol>
           </nav>
           <div className="cs-content">
-            {custom ? <custom.Content /> : (
-              <>
-                <Overview study={study} />
-                <Problem study={study} />
-                <Approach study={study} />
-                <Decisions study={study} slug={slug} title={title} />
-                <Outcomes study={study} />
-                <Learnings study={study} />
-              </>
-            )}
+            <Overview study={study} />
+            <Problem study={study} />
+            <Approach study={study} />
+            <Decisions study={study} slug={slug} title={title} />
+            <Outcomes study={study} />
+            <Learnings study={study} />
           </div>
         </div>
         <MoreWork slug={slug} />
       </main>
-      <Contact index={custom ? 12 : 8} />
+      <Contact index={8} />
     </div>
   );
 }
