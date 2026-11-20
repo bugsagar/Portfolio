@@ -14,13 +14,13 @@ const SECTIONS = [
   ['research', 'Research'],
   ['audit', 'Audit'],
   ['exploration', 'Exploration'],
-  ['process', 'Process'],
+  ['workflow', 'Workflow'],
   ['features', 'Key Features'],
   ['language', 'Visual Language'],
   ['outcomes', 'Outcomes'],
 ];
-// TL;DR keeps the header, a three-line summary and what shipped.
-const TLDR_SECTIONS = ['overview', 'tldr', 'features', 'outcomes'];
+// TL;DR keeps the header, a three-line summary, the workflow and what shipped.
+const TLDR_SECTIONS = ['overview', 'tldr', 'workflow', 'outcomes'];
 
 function readTime(study) {
   const words = JSON.stringify(study).replace(/"[a-z]+\/[a-z0-9-]+"/g, '').split(/\s+/).length;
@@ -200,18 +200,86 @@ function Exploration({ data, onOpen }) {
   );
 }
 
-function Process({ data, onOpen }) {
+/* The end-to-end workflow: a map of stages (the last one loops back), and
+   for the stage in focus who does what, the decision it turns on, the
+   states designed for it, why it works that way, and its screen. */
+const ACTOR = { user: 'You', system: 'System' };
+
+function Workflow({ data, onOpen }) {
+  const [at, setAt] = useState(0);
+  const stages = data.stages;
+  const s = stages[at];
+  const mapRef = useRef(null);
+  // on phones the map scrolls sideways: keep the current stage in view
+  useEffect(() => {
+    const map = mapRef.current;
+    const dot = map?.children[at];
+    if (!map || !dot || map.scrollWidth <= map.clientWidth) return;
+    map.scrollLeft = dot.offsetLeft - map.clientWidth / 2 + dot.offsetWidth / 2;
+  }, [at]);
+  const counts = [
+    [stages.length, 'stages'],
+    [stages.filter((x) => x.decision).length, 'decision points'],
+    [stages.reduce((n, x) => n + (x.states?.length || 0), 0), 'states designed'],
+  ];
   return (
-    <section className="clean-section" id="process">
+    <section className="clean-section" id="workflow">
       <h2 className="clean-h2">{data.title}</h2>
       <p className="clean-body">{data.intro}</p>
-      <div className="clean-stage clean-process">
-        {data.steps.map(([label, image], i) => (
-          <div key={label}>
-            <Img image={image} sizes="(max-width: 900px) 100vw, 25vw" className="is-framed is-crop" onOpen={onOpen} />
-            <span className={`clean-tag${i === data.steps.length - 1 ? ' is-green' : ''}`}>{label}</span>
-          </div>
+      <ul className="clean-flow-count">{counts.map(([n, l]) => <li key={l}><strong>{n}</strong> {l}</li>)}</ul>
+
+      <ol className="clean-flow-map" ref={mapRef} style={{ '--n': stages.length }}>
+        {stages.map((x, i) => (
+          <li key={x.label} className={i === at ? 'is-on' : i < at ? 'is-past' : ''}>
+            <button type="button" onClick={() => setAt(i)} aria-pressed={i === at}>
+              <span className="clean-flow-dot">{String(i + 1).padStart(2, '0')}</span>
+              <span className="clean-flow-label">{x.label}</span>
+            </button>
+          </li>
         ))}
+      </ol>
+      {data.loop && <p className="clean-flow-loop"><span aria-hidden="true">↺</span> {data.loop}</p>}
+
+      <div className="clean-flow-stage">
+        <div className="clean-flow-detail" key={s.label}>
+          <p className="clean-chip">Stage {at + 1} of {stages.length}</p>
+          <h3>{s.label}</h3>
+          <p className="clean-flow-goal">{s.goal}</p>
+
+          <ol className="clean-flow-steps">
+            {s.steps.map(([actor, text]) => (
+              <li key={text}><span className={`clean-actor is-${actor}`}>{ACTOR[actor]}</span><span>{text}</span></li>
+            ))}
+          </ol>
+
+          {s.decision && (
+            <div className="clean-flow-decision">
+              <p><span aria-hidden="true">◆</span> {s.decision.q}</p>
+              <ul>
+                {s.decision.branches.map(([label, outcome]) => (
+                  <li key={label}><strong>{label}</strong><span>{outcome}</span></li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {s.states && (
+            <div className="clean-flow-states">
+              <p className="clean-note-label">States designed</p>
+              <ul>{s.states.map(([name, copy]) => <li key={name}><strong>{name}</strong><span>{copy}</span></li>)}</ul>
+            </div>
+          )}
+
+          {s.why && <p className="clean-flow-why"><strong>Why</strong>{s.why}</p>}
+
+          <div className="clean-flow-nav">
+            <button type="button" onClick={() => setAt(at - 1)} disabled={at === 0}>← Previous</button>
+            <button type="button" onClick={() => setAt(at + 1)} disabled={at === stages.length - 1}>Next stage →</button>
+          </div>
+        </div>
+        <div className="clean-stage clean-flow-screen">
+          <Img key={s.image[0]} image={s.image} sizes="(max-width: 900px) 100vw, 40vw" className="is-framed is-fade" onOpen={onOpen} />
+        </div>
       </div>
     </section>
   );
@@ -360,7 +428,7 @@ export default function CleanCaseStudy({ study, project, more = [] }) {
         {mode === 'tldr' ? (
           <>
             <Tldr rows={study.tldr} />
-            <Features features={study.features} onOpen={show} />
+            {study.workflow && <Workflow data={study.workflow} onOpen={show} />}
             <Outcomes data={study.outcomes} />
           </>
         ) : (
@@ -370,7 +438,7 @@ export default function CleanCaseStudy({ study, project, more = [] }) {
             {study.research && <Research data={study.research} />}
             {study.audit && <Audit data={study.audit} onOpen={show} />}
             {study.exploration && <Exploration data={study.exploration} onOpen={show} />}
-            {study.process && <Process data={study.process} onOpen={show} />}
+            {study.workflow && <Workflow data={study.workflow} onOpen={show} />}
             <Features features={study.features} onOpen={show} />
             {study.language && <Language data={study.language} />}
             <Outcomes data={study.outcomes} />

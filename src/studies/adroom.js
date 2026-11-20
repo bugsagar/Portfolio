@@ -1,5 +1,5 @@
 // Adroom. Copy is from the Adroom product design case study; the Userbase,
-// Research and Audit sections are drafted from it and should be checked
+// Research, Audit and Workflow sections are drafted from it and should be checked
 // against the real project before they are treated as findings.
 
 const img = {
@@ -76,10 +76,71 @@ export default {
       { tag: 'Start with a competitor', copy: 'A dedicated entry point introduces competitor intelligence, then brings monitored brands into a single, scannable view.', image: img.brands },
     ],
   },
-  process: {
-    title: 'One Creative Loop',
-    intro: 'Explore, understand, refine — the loop both entry points lead into.',
-    steps: [['Explore', img.brands], ['Understand', img.analysis], ['Refine', img.resize]],
+  workflow: {
+    title: 'The End-to-End Workflow',
+    intro: 'Two entry points, one creative loop. Each stage below shows who does what, the decision it turns on, and the states designed for it, from the first competitor to the last resized ad.',
+    loop: 'A new competitor signal sends you back to stage 2; a new idea starts again at stage 4.',
+    stages: [
+      {
+        label: 'Choose a way in', image: img.home,
+        goal: 'Give a wide product one clear place to start.',
+        steps: [
+          ['user', 'Lands on the creation home.'],
+          ['system', 'Offers a prompt box, intent-led categories and concrete paths.'],
+          ['user', 'Starts from an idea, or opens Competitor Insights from the rail.'],
+        ],
+        decision: { q: 'Start with an idea or a competitor?', branches: [['An idea', 'Create (stage 4).'], ['A competitor', 'Monitor brands (stage 2).']] },
+        why: 'Both doors lead into the same loop, so neither path is a dead end.',
+      },
+      {
+        label: 'Monitor competitors', image: img.brands,
+        goal: 'Keep every tracked brand in one scannable inventory.',
+        steps: [
+          ['user', 'Adds a brand to monitor, or searches the list.'],
+          ['system', 'Lists each brand’s platform, media mix, date added and active vs inactive ads.'],
+          ['user', 'Opens a brand’s dashboard or its AI report.'],
+        ],
+        decision: { q: 'How deep to go?', branches: [['View Dashboard', 'Read the data module by module (stage 3).'], ['View AI Report', 'A written summary of what the brand is doing.']] },
+        states: [['Loading', 'The workspace holds its shape while data arrives.', ], ['No active ads', '“Nothing to show yet” explains why, says when data will appear, and leads back to brands.']],
+        why: 'A table beats a gallery here: the question is “which brand?”, not “which ad?”.',
+      },
+      {
+        label: 'Read the market', image: img.analysis,
+        goal: 'Turn a dense report into answers to one question at a time.',
+        steps: [
+          ['system', 'Opens on a report overview that sets the context.'],
+          ['user', 'Moves through modules with persistent navigation.'],
+          ['user', 'Reads ad activity: cadence, lifespan and platform split; or the hooks competitors lead with.'],
+        ],
+        decision: { q: 'Which question is being asked?', branches: [['How active are they?', 'Ad activity.'], ['What do they lead with?', 'Hooks.'], ['What’s the big picture?', 'Overview.']] },
+        why: 'One module per question keeps each view readable, and the overview keeps them connected.',
+      },
+      {
+        label: 'Create', image: img.home,
+        goal: 'Turn an idea, or an insight, into a first creative.',
+        steps: [
+          ['user', 'Describes the ad in the prompt box, or picks a path.'],
+          ['user', 'Chooses full ads, UGC videos, video ads or product imagery.'],
+          ['system', 'Says what each path needs, a prompt or an image, before generating.'],
+          ['system', 'Generates; bulk generation and brand-ready copy for scale.'],
+        ],
+        decision: { q: 'What goes in?', branches: [['A prompt', 'Text-led generation.'], ['An image', 'Product imagery and image-led ads.'], ['Many at once', 'Generate ads in bulk.']] },
+        why: 'Each path names its input up front, so nobody discovers a missing image after they press generate.',
+      },
+      {
+        label: 'Refine & resize', image: img.resize,
+        goal: 'Keep the final say with the person, not the model.',
+        steps: [
+          ['user', 'Opens Canvas Size and picks saved sizes, 16:9, 4:5 or 1:1, or adds custom ones.'],
+          ['user', 'Chooses Resize Instantly or Resize with AI.'],
+          ['system', 'With AI, adjusts the layout and keeps key areas in frame for each size.'],
+          ['user', 'Refines with familiar tools (shadow, opacity, flip, align), then shares.'],
+        ],
+        decision: { q: 'Instant or AI resize?', branches: [['Instant', 'Exact sizes, layout as is.'], ['With AI', 'Layout reworked for each format.']] },
+        states: [['Many sizes', 'Each size becomes a page you can step through.'], ['Custom size', 'Width and height with a ratio lock.'], ['Bulk Create Mode', 'A toggle for producing many at once.'], ['Undo / redo', 'Always in the top bar.']],
+        why: 'AI does the tedious part; the canvas, layers and undo stay exactly where designers expect them.',
+      },
+    ],
   },
   features: [
     { title: 'AI creation home', copy: 'Intent-led categories turn a wide capability set into a browsable starting point.', image: img.home },

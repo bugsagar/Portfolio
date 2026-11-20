@@ -1,5 +1,5 @@
 // Visibility. Copy is from the Visibility interactive case study; the
-// Userbase, Research and Audit sections are drafted from it and should be
+// Userbase, Research, Audit and Workflow sections are drafted from it and should be
 // checked against the real project before they are treated as findings.
 
 const img = {
@@ -77,10 +77,80 @@ export default {
       { tag: 'AI visibility', copy: 'A dedicated GEO view brings market share, position, model coverage and sentiment together across OpenAI, Google and Perplexity.', image: img.geo },
     ],
   },
-  process: {
-    title: 'A Continuous Workflow',
-    intro: 'Not another dashboard: set context, make a plan, and review the impact — then refine the strategy.',
-    steps: [['Set context', img.strategy], ['Plan the work', img.content], ['Review impact', img.report]],
+  workflow: {
+    title: 'The End-to-End Workflow',
+    intro: 'Visibility is a loop, not another dashboard: set the strategy, see where you show up, plan the content, fix the site, and measure what changed. Each stage below shows who does what, the decision it turns on, and the states designed for it.',
+    loop: 'What the reports show feeds back into the strategy at stage 2, and the backlog is scored again.',
+    stages: [
+      {
+        label: 'Get started', image: img.onboarding,
+        goal: 'Explain the value before asking for anything.',
+        steps: [
+          ['user', 'Creates an account in a short, focused form.'],
+          ['system', 'Explains alongside it what the product covers: search, AI answers, content and site health.'],
+        ],
+        why: 'People sign up for an outcome, not a feature list, so the form sits beside the promise.',
+      },
+      {
+        label: 'Set the strategy', image: img.strategy,
+        goal: 'Turn business context into rules that score the work.',
+        steps: [
+          ['system', 'Guides setup in four steps: Strategy Brain, Competitors & Keywords, Prompts & Keyword Clusters, GEO Analysis Hub.'],
+          ['user', 'Defines the ideal customer, objectives, brand voice, priorities and risk tolerance.'],
+          ['user', 'Sets strategy sliders: short vs long term, informational vs commercial, updating vs new.'],
+          ['user', 'Saves a strategic shift as a new version.'],
+        ],
+        decision: { q: 'How far did the sliders move?', branches: [['A little', 'Saved; the strategy stays in sync.'], ['A lot', 'A warning first: the whole page backlog will be scored again.']] },
+        states: [['In sync', 'A status dot and version (v1) show which strategy is live.'], ['Reset', 'Undo slider changes before saving.'], ['Guided setup', 'Step 1 of 4, dismissable once understood.']],
+        why: 'Sliders make priorities explicit, and the warning makes their cost visible before it happens.',
+      },
+      {
+        label: 'See where you show up', image: img.geo,
+        goal: 'One picture across search engines and AI answers.',
+        steps: [
+          ['system', 'Website overview: clicks, impressions, CTR and position, with trends.'],
+          ['system', 'GEO view: share, position, model coverage and sentiment across OpenAI, Google and Perplexity.'],
+          ['user', 'Opens the pages flagged as opportunities: traffic decay, needs depth, low clicks.'],
+        ],
+        decision: { q: 'Where is the gap?', branches: [['In search', 'Plan content (stage 4).'], ['In AI answers', 'Adjust prompts and clusters, then plan content.'], ['On the site', 'Fix it (stage 5).']] },
+        states: [['Freshness', 'Last synced, next sync and latest data always visible.'], ['Jobs', 'Background syncs and GEO analysis show as they run.']],
+        why: 'Scores alone don’t say what to do; every metric here leads to a next action.',
+      },
+      {
+        label: 'Plan the content', image: img.content,
+        goal: 'Put quick wins and long-term authority on one board.',
+        steps: [
+          ['system', 'Sorts work into 30-day growth, 60-day momentum, 90-day authority and backlog.'],
+          ['user', 'Switches between bucket, day, week and month views; filters by region.'],
+          ['user', 'Adds a custom item, then moves on to briefs and drafts.'],
+        ],
+        decision: { q: 'Which horizon does it belong to?', branches: [['30 days', 'Immediate priorities and quick wins.'], ['60 days', 'Expansion and optimization.'], ['90 days', 'Long-term authority.'], ['Not yet', 'General backlog.']] },
+        states: [['Overdue', 'Flagged in red with days overdue.'], ['Empty bucket', '“No items planned”, not a blank column.']],
+        why: 'Horizons make trade-offs visible: the team sees what waits when something urgent comes in.',
+      },
+      {
+        label: 'Fix the site', image: img.technical,
+        goal: 'Turn every technical issue into a ranked, actionable fix.',
+        steps: [
+          ['system', 'Scores broken URLs, robots.txt, sitemaps, site vitals and internal links.'],
+          ['system', 'Lists issues with severity and a plain explanation of why each matters.'],
+          ['user', 'Opens an issue with Go, or marks it Done; runs a new analysis.'],
+        ],
+        decision: { q: 'What now with this issue?', branches: [['Go', 'Open the affected pages and fix it.'], ['Done', 'Mark it resolved; it leaves the list.']] },
+        states: [['Severity', 'High and Medium tags rank the list.'], ['Critical score', 'Low scores are called out in words, not just numbers.'], ['Recent runs', 'A history of past analyses.']],
+        why: 'An issue is only useful with its reason and a next step, so every row has both.',
+      },
+      {
+        label: 'Measure', image: img.report,
+        goal: 'Connect the work that shipped with what changed.',
+        steps: [
+          ['system', 'Reports clicks, impressions and query performance over time.'],
+          ['user', 'Compares before and after the content and fixes.'],
+          ['user', 'Takes what changed back into the strategy.'],
+        ],
+        why: 'Closing the loop is what makes it a workflow rather than a set of dashboards.',
+      },
+    ],
   },
   features: [
     { title: 'Onboarding', copy: 'A focused account form pairs with a clear explanation of the value: visibility across search, AI answers, content and site health.', image: img.onboarding },
